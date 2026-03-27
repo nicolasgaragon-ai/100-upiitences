@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>100 Upiitences Dijeron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#0f0e0c;--paper:#f5f0e8;--rust:#c0392b;--rust-dk:#96241b;--rust-lt:#e8b4ae;--gold:#d4a017;--steel:#3a3a3a;--mist:#e8e2d5;--fog:#ccc4b5;--green:#2a6040;--green-lt:#d4edd9;--font-disp:'Bebas Neue',Impact,sans-serif;--font-body:'DM Sans',system-ui,sans-serif;--radius:10px;--radius-lg:16px}
+html,body{height:100%}
+body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-height:100vh;overflow-x:hidden}
+.screen{display:none;min-height:100vh}
+.screen.active{display:flex;flex-direction:column}
+
+/* SETUP */
+#screen-setup{position:relative;align-items:center;justify-content:center;padding:2rem 1rem;overflow:hidden}
+.setup-bg{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(0,0,0,.06) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(0,0,0,.06) 40px);background-size:40px 40px;pointer-events:none}
+.setup-bg::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,transparent 50%,rgba(245,240,232,.85) 100%)}
+.setup-inner{position:relative;z-index:1;width:100%;max-width:560px;display:flex;flex-direction:column;gap:1.5rem}
+.logo-block{text-align:center}
+.logo-eyebrow{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--rust);background:rgba(192,57,43,.1);border:1px solid rgba(192,57,43,.3);padding:3px 12px;border-radius:20px;margin-bottom:10px}
+.logo-title{font-family:var(--font-disp);font-size:clamp(42px,10vw,72px);line-height:.95;letter-spacing:.02em;color:var(--ink)}
+.logo-sub{margin-top:10px;font-size:13px;color:#888;letter-spacing:.05em}
+.teams-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.team-row{display:flex;align-items:center;gap:10px;background:white;border:1.5px solid var(--fog);border-radius:var(--radius);padding:10px 12px;transition:border-color .2s,box-shadow .2s}
+.team-row:focus-within{border-color:var(--rust);box-shadow:0 0 0 3px rgba(192,57,43,.12)}
+.team-badge{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+.team-row input{flex:1;border:none;outline:none;background:transparent;font-family:var(--font-body);font-size:14px;font-weight:500;color:var(--ink);min-width:0}
+.btn-start{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--rust);color:white;border:none;border-radius:var(--radius);padding:14px 28px;font-family:var(--font-disp);font-size:20px;letter-spacing:.08em;cursor:pointer;transition:background .2s,transform .1s;width:100%}
+.btn-start:hover{background:var(--rust-dk)}
+.btn-start:active{transform:scale(.98)}
+
+/* BRACKET */
+.top-bar{background:var(--ink);color:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.top-bar-title{display:flex;flex-direction:column;gap:2px}
+.top-eyebrow{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#999}
+.top-name{font-family:var(--font-disp);font-size:22px;letter-spacing:.06em;color:white}
+.bracket-wrap{flex:1;overflow-y:auto;padding:1.25rem 1rem 2rem;max-width:640px;margin:0 auto;width:100%}
+.round-label{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--rust);margin:1.25rem 0 8px;padding-bottom:6px;border-bottom:1px solid var(--rust-lt)}
+.match-card{background:white;border:1.5px solid var(--fog);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:8px;transition:border-color .2s,box-shadow .2s}
+.match-card.can-play{cursor:pointer;border-color:var(--steel)}
+.match-card.can-play:hover{border-color:var(--rust);box-shadow:0 3px 14px rgba(192,57,43,.15)}
+.match-card.done{opacity:.6}
+.match-teams{display:flex;align-items:center;gap:10px}
+.mt-name{flex:1;font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mt-name.winner{color:var(--green)}
+.mt-vs{font-family:var(--font-disp);font-size:18px;color:var(--fog);flex-shrink:0}
+.badge-win{display:inline-block;font-size:10px;background:var(--green-lt);color:var(--green);border-radius:20px;padding:2px 8px;margin-left:6px;font-weight:600;vertical-align:middle}
+.match-score{margin-top:8px;font-size:12px;color:#999;text-align:center}
+.play-btn{margin-top:10px;display:flex;justify-content:flex-end}
+.btn-play{background:var(--rust);color:white;border:none;border-radius:8px;padding:7px 18px;font-family:var(--font-disp);font-size:16px;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s}
+.btn-play:hover{background:var(--rust-dk)}
+
+/* GAME */
+#screen-game{background:var(--ink)}
+.game-topbar{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0}
+.game-round-label{font-family:var(--font-disp);font-size:20px;letter-spacing:.08em;color:white}
+.game-progress{font-size:12px;color:#888;background:rgba(255,255,255,.07);padding:4px 12px;border-radius:20px}
+.scoreboard{display:flex;align-items:stretch;padding:16px;gap:8px;background:var(--ink);flex-shrink:0}
+.team-score{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius);padding:12px 14px}
+.team-score.right{text-align:right}
+.ts-name{font-size:12px;font-weight:500;color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px}
+.ts-pts{font-family:var(--font-disp);font-size:36px;color:white;letter-spacing:.04em}
+.vs-divider{display:flex;align-items:center;justify-content:center;font-family:var(--font-disp);font-size:20px;color:rgba(255,255,255,.2);padding:0 4px}
+.game-body{flex:1;overflow-y:auto;padding:12px 16px 20px}
+.q-card{background:white;border-radius:var(--radius-lg);padding:16px;margin-bottom:10px}
+.q-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
+.q-badge{background:var(--rust);color:white;font-family:var(--font-disp);font-size:14px;letter-spacing:.06em;padding:3px 10px;border-radius:6px;flex-shrink:0}
+.q-text{font-size:16px;font-weight:600;line-height:1.4;color:var(--ink)}
+.answers{display:flex;flex-direction:column;gap:7px}
+.ans-row{display:flex;align-items:center;gap:10px;background:var(--mist);border:1.5px solid transparent;border-radius:var(--radius);padding:10px 13px;cursor:pointer;transition:border-color .15s,background .15s}
+.ans-row:hover{border-color:var(--fog)}
+.ans-row.revealed{background:var(--green-lt);border-color:#8fc99a}
+.ans-row.revealed .ap{color:var(--green)}
+.ans-num{width:22px;height:22px;border-radius:50%;background:white;border:1px solid var(--fog);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#888;flex-shrink:0}
+.ans-txt{flex:1;font-size:14px;font-weight:500;line-height:1.3}
+.ap{font-size:13px;font-weight:600;color:#999;min-width:34px;text-align:right}
+.hidden-pill{display:inline-block;background:var(--fog);border-radius:4px;width:110px;height:14px;vertical-align:middle}
+.btn-reveal-all{display:block;width:100%;margin-top:8px;padding:10px;background:transparent;border:1.5px dashed var(--fog);border-radius:var(--radius);font-size:13px;font-family:var(--font-body);color:#888;cursor:pointer;transition:border-color .15s,color .15s}
+.btn-reveal-all:hover{border-color:var(--steel);color:var(--steel)}
+.turn-bar{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius);padding:10px 14px;margin-bottom:8px}
+.turn-label{font-size:12px;color:#888}
+.turn-name{font-size:14px;font-weight:600;color:white}
+.btn-switch{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:7px;padding:5px 13px;font-size:12px;font-family:var(--font-body);color:white;cursor:pointer;transition:background .15s}
+.btn-switch:hover{background:rgba(255,255,255,.18)}
+.nav-row{display:flex;gap:8px}
+.btn-nav{flex:1;padding:11px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:var(--radius);font-size:14px;font-family:var(--font-body);font-weight:500;color:white;cursor:pointer;transition:background .15s}
+.btn-nav:hover{background:rgba(255,255,255,.13)}
+.btn-nav:disabled{opacity:.3;cursor:default}
+.btn-nav.prim{background:var(--rust);border-color:transparent;color:white}
+.btn-nav.prim:hover{background:var(--rust-dk)}
+
+/* RESULT */
+#screen-result{align-items:center;justify-content:center;padding:2rem 1rem;background:var(--paper)}
+.result-wrap{width:100%;max-width:480px}
+.result-card{background:white;border:1.5px solid var(--fog);border-radius:var(--radius-lg);padding:28px 24px;text-align:center}
+.result-eyebrow{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:#999;margin-bottom:6px}
+.result-matchup{font-size:15px;font-weight:600;margin-bottom:20px;color:var(--steel)}
+.winner-strip{background:var(--green-lt);border:1.5px solid #8fc99a;border-radius:var(--radius);padding:14px 20px;margin-bottom:20px}
+.winner-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:4px}
+.winner-name{font-family:var(--font-disp);font-size:28px;color:var(--green);letter-spacing:.04em}
+.result-scores{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:22px}
+.rs-block{flex:1}
+.rs-block.right{text-align:right}
+.rs-name{font-size:12px;color:#999;margin-bottom:2px}
+.rs-pts{font-family:var(--font-disp);font-size:30px;color:var(--ink)}
+.rs-sep{font-size:20px;color:var(--fog)}
+.btn-back{display:block;width:100%;padding:12px;background:var(--ink);color:white;border:none;border-radius:var(--radius);font-family:var(--font-disp);font-size:18px;letter-spacing:.06em;cursor:pointer;transition:opacity .2s}
+.btn-back:hover{opacity:.85}
+
+/* CHAMPION */
+#screen-champion{align-items:center;justify-content:center;padding:2rem 1rem;background:var(--ink);text-align:center}
+.champ-wrap{width:100%;max-width:420px;position:relative}
+.trophy-glow{position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(212,160,23,.25) 0%,transparent 70%);pointer-events:none}
+.trophy-icon{font-size:60px;margin-bottom:12px}
+.champ-label{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.champ-name{font-family:var(--font-disp);font-size:42px;color:white;letter-spacing:.04em;margin-bottom:28px;line-height:1}
+.podium-list{display:flex;flex-direction:column;gap:6px;margin-bottom:24px}
+.p-row{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:var(--radius);padding:10px 14px}
+.p-pos{font-size:18px;width:26px;text-align:center;flex-shrink:0}
+.p-name{flex:1;font-size:14px;font-weight:600;color:white;text-align:left}
+.p-pts{font-size:13px;color:#888}
+.btn-reset{display:block;width:100%;padding:13px;background:var(--rust);color:white;border:none;border-radius:var(--radius);font-family:var(--font-disp);font-size:20px;letter-spacing:.08em;cursor:pointer;transition:background .2s}
+.btn-reset:hover{background:var(--rust-dk)}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--fog);border-radius:10px}
+</style>
+</head>
+<body>
+
+<!-- SETUP -->
+<div class="screen active" id="screen-setup">
+  <div class="setup-bg"></div>
+  <div class="setup-inner">
+    <div class="logo-block">
+      <div class="logo-eyebrow">Revolución Industrial</div>
+      <h1 class="logo-title">100 Upiitences<br>Dijeron</h1>
+      <div class="logo-sub">Torneo de 6 equipos</div>
+    </div>
+    <div class="teams-grid" id="teams-grid"></div>
+    <button class="btn-start" onclick="startTournament()">
+      <span>Iniciar torneo</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- BRACKET -->
+<div class="screen" id="screen-bracket">
+  <header class="top-bar">
+    <div class="top-bar-title">
+      <span class="top-eyebrow">Torneo</span>
+      <span class="top-name">100 Upiitences Dijeron</span>
+    </div>
+  </header>
+  <div class="bracket-wrap">
+    <div id="bracket-content"></div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div class="screen" id="screen-game">
+  <header class="game-topbar">
+    <div class="game-round-label" id="game-title"></div>
+    <div class="game-progress" id="game-sub"></div>
+  </header>
+  <div class="scoreboard">
+    <div class="team-score">
+      <div class="ts-name" id="t1name">—</div>
+      <div class="ts-pts" id="t1pts">0</div>
+    </div>
+    <div class="vs-divider">VS</div>
+    <div class="team-score right">
+      <div class="ts-name" id="t2name">—</div>
+      <div class="ts-pts" id="t2pts">0</div>
+    </div>
+  </div>
+  <div class="game-body" id="game-content"></div>
+</div>
+
+<!-- RESULT -->
+<div class="screen" id="screen-result">
+  <div class="result-wrap">
+    <div class="result-card">
+      <div class="result-eyebrow">Fin del encuentro</div>
+      <div class="result-matchup" id="result-sub"></div>
+      <div class="winner-strip">
+        <div class="winner-label">Ganador</div>
+        <div class="winner-name" id="winner-name"></div>
+      </div>
+      <div class="result-scores">
+        <div class="rs-block">
+          <div class="rs-name" id="res-t1n"></div>
+          <div class="rs-pts" id="res-t1p"></div>
+        </div>
+        <div class="rs-sep">—</div>
+        <div class="rs-block right">
+          <div class="rs-name" id="res-t2n"></div>
+          <div class="rs-pts" id="res-t2p"></div>
+        </div>
+      </div>
+      <button class="btn-back" onclick="backToBracket()">Volver al bracket →</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHAMPION -->
+<div class="screen" id="screen-champion">
+  <div class="champ-wrap">
+    <div class="trophy-glow"></div>
+    <div class="trophy-icon">🏆</div>
+    <div class="champ-label">¡Campeón del torneo!</div>
+    <div class="champ-name" id="champ-name"></div>
+    <div class="podium-list" id="podium"></div>
+    <button class="btn-reset" onclick="resetAll()">Nuevo torneo</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════
+// BANCO DE PREGUNTAS
+// ══════════════════════
+const BANCO = {
+  'Cuartos de final': [
+    { q:"¿De qué tipo de economía venía la sociedad ANTES de la Revolución Industrial?", r:[{t:"Agricultura y producción artesanal",p:55},{t:"Comercio marítimo",p:25},{t:"Ganadería y caza",p:20}] },
+    { q:"¿Quién inventó la Máquina de Vapor conocida como 'el motor del cambio' industrial?", r:[{t:"James Watt",p:65},{t:"George Stephenson",p:20},{t:"Thomas Edison",p:15}] },
+    { q:"¿Qué reemplazó la Máquina de Vapor en las fábricas y talleres?", r:[{t:"La fuerza animal y humana",p:60},{t:"Los molinos de viento",p:25},{t:"El trabajo artesanal manual",p:15}] },
+    { q:"¿Cuál fue el principal impacto de la Máquina de Vapor en la producción?", r:[{t:"Producción constante y a gran escala",p:60},{t:"Reducción de costos de transporte",p:25},{t:"Mayor exportación de productos",p:15}] },
+    { q:"La Spinning Jenny y la Lanzadera volante fueron innovaciones clave en la industria...", r:[{t:"Textil",p:65},{t:"Metalúrgica / siderurgia",p:25},{t:"Alimentaria",p:10}] },
+    { q:"¿Cómo se llamaba el nuevo sistema donde todo el proceso productivo se centralizaba en un mismo lugar?", r:[{t:"Factory System (sistema de fábrica)",p:55},{t:"Domestic System (sistema doméstico)",p:30},{t:"Sistema gremial",p:15}] }
+  ],
+  'Semifinal': [
+    { q:"¿Cuántas horas al día trabajaban los obreros en las fábricas industriales?", r:[{t:"14 a 16 horas",p:60},{t:"10 a 12 horas",p:25},{t:"8 horas",p:15}] },
+    { q:"¿Desde qué edad trabajaban los niños en minas y fábricas textiles?", r:[{t:"Desde los 5 o 6 años",p:60},{t:"Desde los 10 años",p:25},{t:"Desde los 12 años",p:15}] },
+    { q:"¿Cuál fue la consecuencia principal del trabajo infantil según la presentación?", r:[{t:"Analfabetismo y raquitismo",p:60},{t:"Desintegración familiar",p:25},{t:"Pobreza extrema permanente",p:15}] },
+    { q:"¿Qué se convirtió en el 'verdadero jefe' dentro de las fábricas industriales?", r:[{t:"El reloj",p:55},{t:"El capataz / supervisor",p:30},{t:"El dueño de la fábrica",p:15}] },
+    { q:"¿Por qué los patrones contrataban niños en lugar de adultos en las fábricas?", r:[{t:"Eran ágiles y se les pagaba una fracción del sueldo adulto",p:65},{t:"Eran más obedientes y disciplinados",p:25},{t:"Podían trabajar más horas seguidas",p:10}] },
+    { q:"¿Qué derechos laborales NO existían para los obreros de las fábricas?", r:[{t:"Vacaciones, seguro médico y jubilación",p:55},{t:"Salario mínimo garantizado",p:30},{t:"Días de descanso semanal",p:15}] }
+  ],
+  'Final': [
+    { q:"¿Por qué los campesinos emigraron masivamente a las ciudades industriales?", r:[{t:"La maquinaria agrícola los dejó sin trabajo",p:55},{t:"Buscaban mejores salarios en las fábricas",p:30},{t:"El gobierno los reubicó a las ciudades",p:15}] },
+    { q:"Manchester pasó de 25,000 habitantes en 1772 a _____ en 1850.", r:[{t:"Más de 300,000 habitantes",p:65},{t:"Más de 100,000 habitantes",p:25},{t:"Más de 500,000 habitantes",p:10}] },
+    { q:"¿Cómo se define al Proletariado según la presentación?", r:[{t:"Clase que solo posee su prole (hijos) y capacidad de trabajo",p:60},{t:"Obreros con tierras propias heredadas",p:25},{t:"Clase media con acceso a educación",p:15}] },
+    { q:"¿Qué movimiento obrero DESTRUÍA máquinas por miedo a perder el empleo?", r:[{t:"Ludismo",p:65},{t:"Sindicalismo",p:25},{t:"Anarquismo",p:10}] }
+  ]
+};
+
+const TEAM_COLORS=[
+  {bg:'#E8F4FD',fg:'#1a5276'},{bg:'#FDEBD0',fg:'#784212'},
+  {bg:'#E9F7EF',fg:'#1d6a39'},{bg:'#FDEDEC',fg:'#922b21'},
+  {bg:'#EDE7F6',fg:'#4527a0'},{bg:'#FEF9E7',fg:'#7d6608'}
+];
+
+// ══════════════════════
+// APP LOGIC
+// ══════════════════════
+let teams=[], matches=[], gameState={};
+
+function tn(idx){return idx===null?'Por definir':teams[idx].name;}
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+id).classList.add('active');window.scrollTo(0,0);}
+
+function initSetup(){
+  const grid=document.getElementById('teams-grid');
+  grid.innerHTML='';
+  for(let i=0;i<6;i++){
+    const c=TEAM_COLORS[i];
+    grid.innerHTML+=`<div class="team-row"><div class="team-badge" style="background:${c.bg};color:${c.fg}">E${i+1}</div><input id="tn${i}" type="text" placeholder="Equipo ${i+1}" value="Equipo ${i+1}" maxlength="20"/></div>`;
+  }
+}
+
+function startTournament(){
+  teams=[];
+  for(let i=0;i<6;i++){
+    const v=document.getElementById('tn'+i).value.trim()||`Equipo ${i+1}`;
+    teams.push({name:v,totalPts:0,color:TEAM_COLORS[i]});
+  }
+  matches=[
+    {round:'Cuartos de final',t1:0,t2:1,winner:null,t1pts:0,t2pts:0},
+    {round:'Cuartos de final',t1:2,t2:3,winner:null,t1pts:0,t2pts:0},
+    {round:'Cuartos de final',t1:4,t2:5,winner:null,t1pts:0,t2pts:0},
+    {round:'Semifinal',t1:null,t2:null,winner:null,t1pts:0,t2pts:0},
+    {round:'Semifinal',t1:null,t2:null,winner:null,t1pts:0,t2pts:0},
+    {round:'Final',t1:null,t2:null,winner:null,t1pts:0,t2pts:0},
+  ];
+  showScreen('bracket');
+  renderBracket();
+}
+
+function renderBracket(){
+  const rounds=['Cuartos de final','Semifinal','Final'];
+  let html='';
+  rounds.forEach(round=>{
+    html+=`<div class="round-label">${round}</div>`;
+    matches.filter(m=>m.round===round).forEach(m=>{
+      const mi=matches.indexOf(m);
+      const done=m.winner!==null;
+      const canPlay=m.t1!==null&&m.t2!==null&&!done;
+      const cls='match-card'+(done?' done':'')+(canPlay?' can-play':'');
+      const w1=done&&m.winner===m.t1?' winner':'';
+      const w2=done&&m.winner===m.t2?' winner':'';
+      html+=`<div class="${cls}">
+        <div class="match-teams">
+          <span class="mt-name${w1}">${tn(m.t1)}${done&&m.winner===m.t1?'<span class="badge-win">Ganador</span>':''}</span>
+          <span class="mt-vs">VS</span>
+          <span class="mt-name${w2}" style="text-align:right">${done&&m.winner===m.t2?'<span class="badge-win">Ganador</span>':''}${tn(m.t2)}</span>
+        </div>
+        ${done?`<div class="match-score">${m.t1pts} — ${m.t2pts} puntos</div>`:''}
+        ${canPlay?`<div class="play-btn"><button class="btn-play" onclick="startMatch(${mi})">Jugar →</button></div>`:''}
+      </div>`;
+    });
+  });
+  document.getElementById('bracket-content').innerHTML=html;
+}
+
+function startMatch(mi){
+  const m=matches[mi];
+  const banco=BANCO[m.round];
+  const count=m.round==='Final'?4:6;
+  const preguntas=shuffle([...banco]).slice(0,count);
+  gameState={mi,t1:m.t1,t2:m.t2,t1pts:0,t2pts:0,questions:preguntas,qIdx:0,revealed:preguntas.map(q=>q.r.map(()=>false)),turn:'t1'};
+  showScreen('game');
+  renderGame();
+}
+
+function renderGame(){
+  const gs=gameState;
+  const q=gs.questions[gs.qIdx];
+  const t1=teams[gs.t1];const t2=teams[gs.t2];
+  const m=matches[gs.mi];
+  document.getElementById('game-title').textContent=m.round;
+  document.getElementById('game-sub').textContent=`${gs.qIdx+1} / ${gs.questions.length}`;
+  document.getElementById('t1name').textContent=t1.name;
+  document.getElementById('t1pts').textContent=gs.t1pts;
+  document.getElementById('t2name').textContent=t2.name;
+  document.getElementById('t2pts').textContent=gs.t2pts;
+  const turnTeam=gs.turn==='t1'?t1:t2;
+  const allRev=gs.revealed[gs.qIdx].every(Boolean);
+  const isLast=gs.qIdx===gs.questions.length-1;
+  const rows=q.r.map((r,i)=>{
+    const rev=gs.revealed[gs.qIdx][i];
+    return `<div class="ans-row${rev?' revealed':''}" onclick="revealAns(${i})">
+      <div class="ans-num">${i+1}</div>
+      <span class="ans-txt">${rev?r.t:'<span class="hidden-pill"></span>'}</span>
+      <span class="ap">${rev?'+'+r.p:r.p}</span>
+    </div>`;
+  }).join('');
+  document.getElementById('game-content').innerHTML=`
+    <div class="q-card">
+      <div class="q-header"><span class="q-badge">P${gs.qIdx+1}</span><span class="q-text">${q.q}</span></div>
+      <div class="answers">${rows}</div>
+      ${!allRev?`<button class="btn-reveal-all" onclick="revealAllAns()">Revelar todas las respuestas</button>`:''}
+    </div>
+    <div class="turn-bar">
+      <div><div class="turn-label">Respondiendo</div><div class="turn-name">${turnTeam.name}</div></div>
+      <button class="btn-switch" onclick="switchTurn()">Cambiar turno</button>
+    </div>
+    <div class="nav-row">
+      <button class="btn-nav" ${gs.qIdx===0?'disabled':''} onclick="prevQ()">← Anterior</button>
+      <button class="btn-nav prim" onclick="nextQ()">${isLast?'Finalizar →':'Siguiente →'}</button>
+    </div>`;
+}
+
+function revealAns(i){
+  const gs=gameState;
+  if(gs.revealed[gs.qIdx][i])return;
+  gs.revealed[gs.qIdx][i]=true;
+  const pts=gs.questions[gs.qIdx].r[i].p;
+  if(gs.turn==='t1')gs.t1pts+=pts;else gs.t2pts+=pts;
+  renderGame();
+}
+function revealAllAns(){
+  const gs=gameState;
+  gs.questions[gs.qIdx].r.forEach((r,i)=>{if(!gs.revealed[gs.qIdx][i]){gs.revealed[gs.qIdx][i]=true;if(gs.turn==='t1')gs.t1pts+=r.p;else gs.t2pts+=r.p;}});
+  renderGame();
+}
+function switchTurn(){gameState.turn=gameState.turn==='t1'?'t2':'t1';renderGame();}
+function nextQ(){if(gameState.qIdx<gameState.questions.length-1){gameState.qIdx++;renderGame();}else endMatch();}
+function prevQ(){if(gameState.qIdx>0){gameState.qIdx--;renderGame();}}
+
+function endMatch(){
+  const gs=gameState;
+  const m=matches[gs.mi];
+  m.t1pts=gs.t1pts;m.t2pts=gs.t2pts;
+  const winner=gs.t1pts>=gs.t2pts?gs.t1:gs.t2;
+  m.winner=winner;
+  teams[gs.t1].totalPts+=gs.t1pts;
+  teams[gs.t2].totalPts+=gs.t2pts;
+  const qf=matches.filter(x=>x.round==='Cuartos de final');
+  if(qf.every(x=>x.winner!==null)&&matches[3].t1===null){
+    matches[3].t1=qf[0].winner;matches[3].t2=qf[1].winner;
+    const losers=qf.map(q=>({idx:q.winner===q.t1?q.t2:q.t1,pts:q.winner===q.t1?q.t2pts:q.t1pts}));
+    losers.sort((a,b)=>b.pts-a.pts);
+    matches[4].t1=qf[2].winner;matches[4].t2=losers[0].idx;
+  }
+  const sf=matches.filter(x=>x.round==='Semifinal');
+  if(sf.every(x=>x.winner!==null)&&matches[5].t1===null){matches[5].t1=sf[0].winner;matches[5].t2=sf[1].winner;}
+  document.getElementById('result-sub').textContent=`${teams[gs.t1].name} vs ${teams[gs.t2].name}`;
+  document.getElementById('winner-name').textContent=teams[winner].name;
+  document.getElementById('res-t1n').textContent=teams[gs.t1].name;
+  document.getElementById('res-t1p').textContent=gs.t1pts+' pts';
+  document.getElementById('res-t2n').textContent=teams[gs.t2].name;
+  document.getElementById('res-t2p').textContent=gs.t2pts+' pts';
+  showScreen('result');
+  if(m.round==='Final')setTimeout(showChampion,2200);
+}
+
+function backToBracket(){
+  showScreen('bracket');renderBracket();
+  if(matches[5]&&matches[5].winner!==null)setTimeout(showChampion,400);
+}
+
+function showChampion(){
+  document.getElementById('champ-name').textContent=teams[matches[5].winner].name;
+  const sorted=[...teams].sort((a,b)=>b.totalPts-a.totalPts);
+  const medals=['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣'];
+  document.getElementById('podium').innerHTML=sorted.map((t,i)=>`<div class="p-row"><span class="p-pos">${medals[i]}</span><span class="p-name">${t.name}</span><span class="p-pts">${t.totalPts} pts</span></div>`).join('');
+  showScreen('champion');
+}
+
+function resetAll(){showScreen('setup');initSetup();}
+initSetup();
+</script>
+</body>
+</html>
